@@ -1,0 +1,127 @@
+﻿@model List<BanDongHoSolution.Data.Dtos.Cart.CartItem>
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>GIỎ HÀNG</h2>
+
+@if (Model.Count > 0) {
+  decimal? total = 0;
+  int stt = 1;
+  
+  <div class="table-responsive card mt-2">
+      <table class="table table-hover">
+        <tr>
+          <th>#</th>
+          <th>Sản phẩm</th>
+          <th>Giá</th>
+          <th>Số lượng</th>
+          <th>Thành tiền</th>
+          <th></th>
+        </tr>
+        @foreach (var cartitem in Model)
+        {
+            var thanhtien = cartitem.Quantity * cartitem.SANPHAM!.DONGIA;
+            total += thanhtien;
+
+            <tr>
+               <td>@(stt++)</td>
+               <td>
+                   <label style="width: 300px">@cartitem.SANPHAM.TENSP</label>
+               </td>
+               <td>
+                   <label style="width: 150px">@Convert.ToDecimal(cartitem.SANPHAM.DONGIA).ToString("#,##0") đồng</label>
+               </td>
+               <td>
+                   <label>
+                       <input asp-for="@cartitem.Quantity" id="@($"quantity-{cartitem.SANPHAM.MASP}")" type="number" min="1"/>
+                   </label>
+               </td>
+               <td>
+                   <label style="width: 150px">@Convert.ToDecimal(thanhtien).ToString("#,##0") đồng</label>
+               </td>
+               <td>
+                  <label style="width: 150px">
+                      <button class="btn btn-success updatecartitem" 
+                        data-productid="@cartitem.SANPHAM.MASP">Cập nhật</button>
+                      <a asp-route="removecart" asp-route-productid="@cartitem.SANPHAM.MASP"
+                        class="btn btn-danger">Xóa</a>
+                  </label>
+               </td>
+            </tr>
+        }
+          <tr>
+              <td colspan="4" class="text-right">Tổng tiền</td>
+              <td>@Convert.ToDecimal(total).ToString("#,##0") đồng</td>
+              <td></td>
+          </tr>
+      </table>
+  </div>
+  @if (Context.Session.GetString("UserName") != null)
+  {
+     <form asp-action="AddOrder" asp-controller="Cart" method="post">
+          <div class="col-md-4">
+              <input type="hidden" name="TongTien" value="@total" />
+              <div class="mb-3">
+                  <label class="form-label">Họ tên</label>
+                  <input type="text" class="form-control" name="TenKH" required placeholder="Tên khách hàng" value="@Context.Session.GetString("TenKH")" />
+              </div class="mb-3">
+
+              <div class="mb-3">
+                  <label class="form-label">Số điện thoại</label>
+                  <input type="tel" class="form-control" name="SDT" required placeholder="Số điện thoại" value="@Context.Session.GetString("SDT")" />
+              </div class="mb-3">
+
+              <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" name="Email" required placeholder="Email" value="@Context.Session.GetString("Email")" />
+              </div class="mb-3">
+
+              <div class="mb-3">
+                  <label class="form-label">Địa chỉ giao</label>
+                  <input type="text" class="form-control" name="DiaChiGiao" required placeholder="Địa chỉ giao" value="@Context.Session.GetString("DiaChi")" />
+              </div class="mb-3">
+
+              <div class="mb-3">
+                  <label class="form-label">Mô tả</label>
+                  <input type="text" class="form-control" name="MoTa" placeholder="Mô tả" />
+              </div class="mb-3">
+          </div>
+          <button type="submit" class="btn btn-success">Gửi đơn hàng</button>
+        </form>
+    }
+    else
+    {
+        <a href="/Account/Login" class="btn btn-success">Đăng nhập để tiếp tục</a>
+    }
+
+
+      @section Scripts {
+        <script>
+          $(document).ready(function () {
+              $(".updatecartitem").click(function (event) {
+                  event.preventDefault();
+                  var productid = $(this).attr("data-productid");
+                  var quantity = $("#quantity-" + productid).val();
+                  $.ajax({
+                      type: "POST",
+                      url:"@Url.RouteUrl("updatecart")",
+                      data: {
+                          productid: productid,
+                          quantity:quantity
+                      },
+                      success: function (result) {
+                          window.location.href = "@Url.RouteUrl("cart")";
+                      }
+                  });
+              });
+          });
+        </script>
+      }
+
+}
+else {
+  <p class="alert alert-danger">Giỏ hàng trống</p>
+  <a href="/" class="btn btn-success">Tiếp tục mua hàng</a>
+}

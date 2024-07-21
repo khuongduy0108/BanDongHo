@@ -1,0 +1,61 @@
+﻿@model List<BanDongHoSolution.Data.Models.DONHANG>
+@{
+    ViewData["Title"] = "Đơn hàng của bạn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Danh sách đơn hàng</h2>
+
+<div class="table-responsive card mt-2">
+    @if (Model != null)
+    {
+        var stt = 1;
+        <Table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ giao</th>
+                    <th>Ngày đặt</th>
+                    <th>Ngày giao</th>
+                    <th>Mô tả</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th>@stt</th>
+                        <td>
+                            <lable style="width: 160px">@item.SDT</lable>
+                        </td>
+                        <td>
+                            <label style="width: 300px">@item.DIACHIGIAO</label>
+                        </td>
+                        <td>
+                            <label style="width: 200px">@item.NGAYDAT</label>
+                        </td>
+                        <td>
+                            <label style="width: 200px">@item.NGAYGIAO</label>
+                        </td>
+                        <td>
+                            <label style="width: 200px">@item.MOTA</label>
+                        </td>
+                        <td>
+                            <label style="width: 150px">@Convert.ToDecimal(item.TONGTIEN).ToString("#,##0") đồng</label>
+                        </td>
+                        <td>
+                            <label style="width: 100px">@item.TRANGTHAI</label>
+                        </td>
+                    </tr>
+                    stt++;
+                }
+            </tbody>
+        </Table>
+    }
+    else
+    {
+        <p class="alert alert-danger">Không có dữ liệu</p>
+    }
+</div>

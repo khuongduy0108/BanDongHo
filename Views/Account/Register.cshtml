@@ -1,0 +1,62 @@
+﻿@model BanDongHoSolution.Data.Dtos.Account.RegisterDto
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" asp-controller="Account" asp-action="Register">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 card">
+            <h1>Đăng kí</h1>
+            <div class="mb-3">
+                <label class="form-label">Tên đăng nhập</label>
+                <input asp-for="TenDN" class="form-control" required placeholder="Tên đăng nhập" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mật khẩu</label>
+                <input type="password" class="form-control" asp-for="MatKhau" required placeholder="Mật khẩu" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Xác nhận mật khẩu</label>
+                <input type="password" class="form-control" asp-for="XacNhanMatKhau" required placeholder="Xác nhân mật khẩu" />
+            </div class="mb-3">
+
+            <div class="mb-3">
+                <label class="form-label">Họ tên</label>
+                <input type="text" class="form-control" asp-for="TenKH" required placeholder="Tên khách hàng" />
+            </div class="mb-3">
+
+            <div class="mb-3">
+                <label class="form-label">Giới tính</label>
+                <select class="form-control" asp-for="GioiTinh">
+                    <option>Nam</option>
+                    <option>Nữ</option>
+                </select>
+            </div class="mb-3">
+
+            <div class="mb-3">
+                <label class="form-label">Số điện thoại</label>
+                <input type="tel" class="form-control" asp-for="SDT" required placeholder="Số điện thoại" />
+            </div class="mb-3">
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" asp-for="Email" required placeholder="Email" />
+            </div class="mb-3">
+
+            <div class="mb-3">
+                <label class="form-label">Địa chỉ</label>
+                <input type="text" class="form-control" asp-for="DiaChi" required placeholder="Địa chỉ" />
+            </div class="mb-3">
+
+            <div class="mb-3">
+                <input type="submit" class="btn btn-primary" value="Register" />
+            </div>
+            </div>
+        <div class="col-md-3"></div>
+    </div>
+</form>

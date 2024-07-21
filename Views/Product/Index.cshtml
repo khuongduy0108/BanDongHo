@@ -1,0 +1,234 @@
+﻿@model List<BanDongHoSolution.Data.Dtos.Product.ProductDto>
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ThuongHieu = ViewBag.ThuongHieu;
+    var LoaiSP = ViewBag.LoaiSP;
+}
+<form method="post" action="@Url.Action("Search", "Product")">
+    <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm...">
+    <button type="submit">Tìm kiếm</button>
+</form>
+
+
+<button id="btnThem" type="button" class="btn btn-primary" style="display: block" onclick="them()">Thêm</button>
+<div id="btnFormThem" style="display: none">    
+    <b>Thêm mới sản phẩm</b>
+    <form enctype="multipart/form-data" method="post" asp-controller="Product" asp-action="AddProduct">
+        <div class="mb-3">
+            <label class="form-label">Thương hiệu: </label>
+            <select class="form-control" name="MaTH">
+                @if (ThuongHieu!=null)
+                {
+                    @foreach(var item in ThuongHieu)
+                    {
+                        <option value="@item.MATH">@item.TENTH</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Loại sản phẩm: </label>
+            <select class="form-control" name="MaLoaiSP">
+                @if (LoaiSP!=null)
+                {
+                    @foreach (var item in LoaiSP)
+                    {
+                        <option value="@item.MALOAISP">@item.TENLOAISP</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tên sản phẩm: </label>
+            <input required name="TenSP" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Hình lớn: </label>
+            <input name="HinhLonFile" class="form-control" type="file" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Hình nhỏ: </label>
+            <input name="HinhNhoFile" class="form-control" type="file" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Mô tả: </label>
+            <textarea name="MoTa" class="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Đánh giá: </label>
+            <input name="DanhGia" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Số lượng: </label>
+            <input required name="SoLuong" class="form-control" min="0" type="number" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Đơn giá: </label>
+            <input required name="DonGia" class="form-control" min="0" type="number" />
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-warning" onclick="huyThem()">Hủy</button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+    </form>
+</div>
+<h2>Danh sách sản phẩm</h2>
+
+<div class="table-responsive card mt-2">
+    @if (Model != null)
+    {
+        var stt = 1;
+        <Table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Thương hiệu</th>
+                    <th>Loại sản phẩm</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Hình lớn</th>
+                    <th>Hình nhỏ</th>
+                    <th>Mô tả</th>
+                    <th>Đánh giá</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="@("Row0"+item.MaSP)" style="display: revert">
+                        <th>@stt</th>
+                        <td>
+                            <label style="width: 100px">@item.ThuongHieu</label>
+                        </td>
+                        <td>
+                            <label style="width: 200px">@item.LoaiSP</label>
+                        </td>
+                        <td>
+                            <label style="width: 300px">@item.TenSP</label>
+                        </td>
+                        <td>
+                            <img style="width: 100%" src="@item.HinhLon" />
+                        </td>
+                        <td>
+                            <img style="width: 100%" src="@item.HinhNho" />
+                        </td>
+                        <td>
+                            <label style="width: 100px">@item.MoTa</label>
+                        </td>
+                        <td>
+                            <label style="width: 100px">@item.DanhGia</label>
+                        </td>
+                        <td>
+                            <label style="width: 100px">@item.SoLuong</label>
+                        </td>
+                        <td>
+                            <label style="width: 150px">@Convert.ToDecimal(item.DonGia).ToString("#,##0") đồng</label>
+                        </td>
+                        <td>
+                            <label style="width: 110px">
+                                <button type="button" class="btn btn-warning" onclick="sua(@item.MaSP)">Sửa</button>
+                                <button type="button" class="btn btn-danger" onclick="xoa(@item.MaSP)">Xóa</button>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr id="@("Row1"+item.MaSP)" style="display: none">
+                        <th>@stt</th>
+                        <form enctype="multipart/form-data" method="post" asp-controller="Product" asp-action="UpdateProduct">
+                            <td>
+                                <input type="hidden" value="@item.MaSP" name="MaSP" />
+                                <select class="form-control" name="MaTH">
+                                    <option value="@item.MaTH">@item.ThuongHieu</option>
+                                    @if (ThuongHieu != null)
+                                        {
+                                        @foreach (var item1 in ThuongHieu)
+                                        {
+                                                @if (item1.TENTH != item.ThuongHieu)
+                                            {
+                                                <option value="@item1.MATH">@item1.TENTH</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control" name="MaLoaiSP">
+                                    <option value="@item.MaLoaiSP">@item.LoaiSP</option>
+                                    @if (LoaiSP != null)
+                                        {
+                                        @foreach (var item2 in LoaiSP)
+                                        {
+                                            @if(item2.TENLOAISP!=item.LoaiSP){
+                                                <option value="@item2.MALOAISP">@item2.TENLOAISP</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <input required class="form-control" value="@item.TenSP" name="TenSP" />
+                            </td>
+                            <td>
+                                <input class="form-control" type="file" name="HinhLonFile" />
+                            </td>
+                            <td>
+                                <input class="form-control" type="file" name="HinhNhoFile" />
+                            </td>
+                            <td>
+                                <textarea class="form-control" name="MoTa">@item.MoTa</textarea>
+                            </td>
+                            <td>
+                                <input class="form-control" value="@item.DanhGia" name="DanhGia" />
+                            </td>
+                            <td>
+                                <input required class="form-control" value="@item.SoLuong" name="SoLuong" min="0" type="number" />
+                            </td>
+                            <td>
+                                <input required class="form-control" value="@item.DonGia" name="DonGia" min="0" type="number" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-warning" onclick="huy(@item.MaSP)">Hủy</button>
+                                <button type="submit" class="btn btn-primary">Lưu</button>
+                            </td>
+                        </form>
+                    </tr>
+                    stt++;
+                }
+            </tbody>
+        </Table>
+    }
+    else
+    {
+        <p class="alert alert-danger">Không có dữ liệu</p>
+    }
+</div>
+
+
+<style>
+    .search-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px;
+    }
+
+    input[type="text"] {
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        padding: 10px;
+        margin-right: 10px;
+    }
+
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+</style>

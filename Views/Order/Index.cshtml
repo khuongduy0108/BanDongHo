@@ -1,0 +1,91 @@
+﻿@model List<BanDongHoSolution.Data.Models.DONHANG>
+@{
+    ViewData["Title"] = "Danh sách đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Danh sách đơn hàng</h2>
+
+<div class="table-responsive card mt-2">
+    @if (Model != null)
+    {
+        var stt = 1;
+        <Table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ giao</th>
+                    <th>Ngày đặt</th>
+                    <th>Ngày giao</th>
+                    <th>Mô tả</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th>@stt</th>
+                        <td>
+                            <lable style="width: 160px">@item.SDT</lable>
+                        </td>
+                        <td>
+                            <label style="width: 300px">@item.DIACHIGIAO</label>
+                        </td>
+                        <td>
+                            <label style="width: 200px">@item.NGAYDAT</label>
+                        </td>
+                        <td>
+                            <label style="width: 200px">@item.NGAYGIAO</label>
+                        </td>
+                        <td>
+                            <label style="width: 200px">@item.MOTA</label>
+                        </td>
+                        <td>
+                            <label style="width: 150px">@Convert.ToDecimal(item.TONGTIEN).ToString("#,##0") đồng</label>
+                        </td>
+                        <td>
+                            <label style="width: 100px">@item.TRANGTHAI</label>
+                        </td>
+                        <td>
+                            <label style="width: 230px">
+                                <button class="btn btn-primary" onclick="DetailOrder(@item.MADH)">Chi tiết</button> |
+                                @if(@item.TRANGTHAI == "Đã duyệt")
+                                {
+                                    <button class="btn btn-danger" onclick="DuyetHuyDon(@item.MADH, 'Chờ xử lý')">Hủy duyệt đơn</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-success" onclick="DuyetHuyDon(@item.MADH, 'Đã duyệt')">Duyệt đơn</button>
+                                }
+                            </label>
+                        </td>
+                    </tr>
+                    stt++;
+                }
+            </tbody>
+        </Table>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Chi tiết đơn hàng</h5>
+                    </div>
+                    <div class="modal-body">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="closeModal">Thoát</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="alert alert-danger">Không có dữ liệu</p>
+    }
+</div>
